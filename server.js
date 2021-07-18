@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
 
-// const User = require("./userModel.js"); model files for app routes
+const db = require("./models");
 
 const app = express();
 
@@ -18,7 +18,13 @@ app.use(express.static("public"));
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/custommethoddb", { useNewUrlParser: true });
 
 
-
+// db.Library.create({ name: "Campus Library" })
+//   .then(dbLibrary => {
+//     console.log(dbLibrary);
+//   })
+//   .catch(({message}) => {
+//     console.log(message);
+//   });
 
 
 
