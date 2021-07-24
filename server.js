@@ -1,7 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
-
+const path = require("path");
 
 
 const PORT = process.env.PORT || 3000;
@@ -23,11 +23,19 @@ app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
 
+app.get("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/exercise.html"));
+});
 
-app.get("/workouts", (req,res) => {
+app.get("/stats", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/stats.html"));
+});
+
+
+app.get("/api/workouts", (req,res) => {
   db.Workout.find({})
   .then(dbWorkout => {
-    console.log(dbWorkout)
+    // console.log(dbWorkout)
     res.json(dbWorkout);
   })
   .catch(err => {
@@ -35,7 +43,7 @@ app.get("/workouts", (req,res) => {
   })
 })
 
-app.post("/workouts", (req,res) => {
+app.post("/api/workouts", (req,res) => {
   db.Workout.create({})
   .then(dbWorkout => {
     res.json(dbWorkout);
