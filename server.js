@@ -34,8 +34,25 @@ app.get("/stats", (req, res) => {
 
 app.get("/api/workouts", (req,res) => {
   db.Workout.find({})
+  
   .then(dbWorkout => {
     // console.log(dbWorkout)
+    res.json(dbWorkout);
+  })
+  // .then(db.Workout.aggregate({
+  //   $addFields: {
+  //     totalDuration: {$sum: exercises[0].duration}
+  //   }
+  // }))
+
+  .catch(err => {
+    res.json(err);
+  })
+})
+
+app.post("/api/workouts", ({},res) => {
+  db.Workout.create({})
+  .then(dbWorkout => {
     res.json(dbWorkout);
   })
   .catch(err => {
@@ -43,10 +60,24 @@ app.get("/api/workouts", (req,res) => {
   })
 })
 
-app.post("/api/workouts", (req,res) => {
-  db.Workout.create({})
+app.put("/api/workouts/:id", ({body},res) => {
+  const id = res._id
+  db.Workout.findByIdAndUpdate({id}, {$push: {exercises: {body}}})
+   
   .then(dbWorkout => {
+    console.log(res)
     res.json(dbWorkout);
+  })
+  .catch(err => {
+    res.json(err);
+  })
+})
+
+app.get("/api/workouts/range", (req,res) => {
+  db.Workout.find({}).limit(7)
+  .then(dbWorkout => {
+    // console.log(dbWorkout)
+    res.json(dbWorkout)
   })
   .catch(err => {
     res.json(err);
