@@ -33,17 +33,17 @@ app.get("/stats", (req, res) => {
 
 
 app.get("/api/workouts", (req,res) => {
-  db.Workout.find({})
+  db.Workout.aggregate([{
+    $addFields: {
+       totalDuration: {$sum: "$exercises.duration"}
+     } 
+   }])
   
   .then(dbWorkout => {
     // console.log(dbWorkout)
     res.json(dbWorkout);
   })
-  // .then(db.Workout.aggregate({
-  //   $addFields: {
-  //     totalDuration: {$sum: exercises[0].duration}
-  //   }
-  // }))
+ 
 
   .catch(err => {
     res.json(err);
@@ -60,9 +60,9 @@ app.post("/api/workouts", ({},res) => {
   })
 })
 
-app.put("/api/workouts/:id", ({body},res) => {
-  const id = res._id
-  db.Workout.findByIdAndUpdate({id}, {$push: {exercises: {body}}})
+app.put("/api/workouts/:id", ({body, params},res) => {
+  const id = params.id
+  db.Workout.findByIdAndUpdate(id, {$push: {exercises: body}},  { new: true, runValidators: true })
    
   .then(dbWorkout => {
     console.log(res)
