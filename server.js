@@ -65,7 +65,7 @@ app.put("/api/workouts/:id", ({body, params},res) => {
   db.Workout.findByIdAndUpdate(id, {$push: {exercises: body}},  { new: true, runValidators: true })
    
   .then(dbWorkout => {
-    console.log(res)
+   
     res.json(dbWorkout);
   })
   .catch(err => {
@@ -74,9 +74,13 @@ app.put("/api/workouts/:id", ({body, params},res) => {
 })
 
 app.get("/api/workouts/range", (req,res) => {
-  db.Workout.find({}).limit(7)
+  db.Workout.aggregate([{
+    $addFields: {
+       totalDuration: {$sum: "$exercises.duration"}
+     } 
+   }]).limit(7)
   .then(dbWorkout => {
-    // console.log(dbWorkout)
+    
     res.json(dbWorkout)
   })
   .catch(err => {
